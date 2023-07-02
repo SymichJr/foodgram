@@ -18,7 +18,7 @@ class MyUser(AbstractUser):
         help_text=texts.USERS_HELP_EMAIL,
     )
     username = models.CharField(
-        verbose_name="Уникальный юзернейм",
+        verbose_name="Имя пользователя",
         max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         unique=True,
         help_text=texts.USERS_HELP_UNAME,
@@ -60,7 +60,7 @@ class MyUser(AbstractUser):
         ),
     )
     password = models.CharField(
-        verbose_name=_("Пароль"),
+        verbose_name="Пароль",
         max_length=128,
         help_text=texts.USERS_HELP_FNAME,
     )
@@ -115,6 +115,11 @@ class MyUser(AbstractUser):
             storage[idx] = letter
             idx += 1
         return "".join(storage[:idx])
+    
+    def clean(self):
+        self.first_name = self.__normalize_human_names(self.first_name)
+        self.last_name = self.__normalize_human_names(self.last_name)
+        return super().clean()
 
 
 class Subscriptions(models.Model):

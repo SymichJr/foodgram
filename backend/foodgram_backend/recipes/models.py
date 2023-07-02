@@ -1,7 +1,10 @@
 from core.enums import Limits, Tuples
+from core.validators import OneOfTwoValidator, hex_color_validator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.functions import Length
+from PIL import Image
 
 User = get_user_model()
 
@@ -9,8 +12,10 @@ models.CharField.register_lookup(Length)
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=64,
+        max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
+        validators=(OneOfTwoValidator(field="Название тэга"),),
         verbose_name="Название",
+        unique=True
     )
     color = models.CharField(
         verbose_name="Цвет",
@@ -19,7 +24,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         verbose_name="Slug field",
-        max_length=64,
+        max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
         unique=True,
         db_index=False,
     )
@@ -31,12 +36,18 @@ class Tag(models.Model):
     
     def __str__(self):
         return f"{self.name} (цвет: {self.color})"
+    
+    def clean(self) -> None:
+        self.name = self.name.strip().lower()
+        self.slug = self.slug.strip().lower()
+        self.color = hex_color_validator(self.color)
+        return super().clean()
 
 
 class Ingredients(models.Model):
     name = models.CharField(
         verbose_name="Название",
-        max_length=64,
+        max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
     )
     quantity = models.FloatField(
         verbose_name="Количество",
@@ -67,6 +78,11 @@ class Ingredients(models.Model):
     
     def __str__(self):
         return f"{self.name} {self.measurement_unit}"
+    
+    def clean(self):
+        self.name = self.name.lower()
+        self.measurement_unit = self.measurement_unit.lower()
+        super().clean()
 
 
 class Recipe(models.Model):
@@ -86,11 +102,12 @@ class Recipe(models.Model):
         Ingredients,
         verbose_name="Ингредиенты",
         related_name="recipes",
+        through="recipes.AmountIngredient",
     )
     name = models.CharField(
         verbose_name="Название рецепта",
         help_text="Введите название рецепта",
-        max_length=64,
+        max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
     )
     image = models.ImageField(
         verbose_name="Картинка",
@@ -105,6 +122,16 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name="Время приготовления в минутах",
         default=0,
+        validators=(
+            MinValueValidator(
+                Limits.MIN_COOKING_TIME.value,
+                "Ваше блюдо уже готово!",
+            ),
+            MaxValueValidator(
+                Limits.MAX_COOKING_TIME.value,
+                "Очень долго ждать...",
+            ),
+        ),
     )
     pub_date = models.DateTimeField(
         verbose_name="Дата публикации",
@@ -129,6 +156,16 @@ class Recipe(models.Model):
     
     def __str__(self):
         return f"{self.name}. Автор: {self.author.username}"
+    
+    def clean(self):
+        self.name = self.name.capitalize()
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        image = Image.open(self.image.path)
+        image.thumbnail(Tuples.RECIPE_IMAGE_SIZE)
+        image.save(self.image.path)
 
 
 class AmountIngredient(models.Model):
@@ -147,6 +184,16 @@ class AmountIngredient(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name="Количество",
         default=0,
+        validators=(
+            MinValueValidator(
+                Limits.MIN_AMOUNT_INGREDIENTS,
+                "Не могу приготовить из ничего)!",
+            ),
+            MaxValueValidator(
+                Limits.MAX_AMOUNT_INGREDIENTS,
+                "Слишком много!",
+            ),
+        ),
     )
 
 

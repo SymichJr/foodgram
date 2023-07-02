@@ -28,7 +28,7 @@ class AddDelViewMixin:
         return Response(serializer.data, status=HTTP_201_CREATED)
 
 
-    def _delete_relation(self, q: Q):
+    def _delete_relation(self, q):
         deleted, _ = (
                 self.link_model.objects.filter(q & Q(user=self.request.user))
                 .first()
