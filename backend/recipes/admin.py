@@ -1,11 +1,22 @@
-from django.contrib.admin import (ModelAdmin, TabularInline, display, register,
-                                  site)
+from django.contrib.admin import (
+    ModelAdmin,
+    TabularInline,
+    display,
+    register,
+    site,
+)
 from django.utils.html import format_html
 from django.utils.safestring import SafeString, mark_safe
 
 from recipes.forms import TagForm
-from recipes.models import (AmountIngredient, Carts, Favorite, Ingredient,
-                            Recipe, Tag)
+from recipes.models import (
+    AmountIngredient,
+    Carts,
+    Favorite,
+    Ingredient,
+    Recipe,
+    Tag,
+)
 
 site.site_header = "Администрирование Foodgram"
 
@@ -69,8 +80,8 @@ class RecipeAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related('author')
-        queryset = queryset.prefetch_related('author__tags')
+        queryset = queryset.select_related("author")
+        queryset = queryset.prefetch_related("author__tags")
         return queryset
 
     def get_image(self, obj) -> SafeString:

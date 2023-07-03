@@ -39,22 +39,22 @@ class MyUserAdmin(UserAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related('username')
+        queryset = queryset.select_related("username")
         return queryset
 
 
 @register(Subscription)
 class SubscriptionAdmin(ModelAdmin):
     list_display = (
-        'user',
-        'author',
-        'date_added',
+        "user",
+        "author",
+        "date_added",
     )
     list_filter = (
-        'user',
-        'author',
+        "user",
+        "author",
     )
     search_fields = (
-        'user',
-        'author',
+        "user",
+        "author",
     )

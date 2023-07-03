@@ -77,7 +77,9 @@ class MyUser(AbstractUser):
         ordering = ("username",)
         constraints = (
             models.CheckConstraint(
-                check=models.Q(username__length__gte=Limits.MIN_LEN_USERNAME.value),
+                check=models.Q(
+                    username__length__gte=Limits.MIN_LEN_USERNAME.value
+                ),
                 name="\nusername is too short\n",
             ),
         )
@@ -152,7 +154,8 @@ class Subscription(models.Model):
                 name="\nRepeat subscription\n",
             ),
             models.CheckConstraint(
-                check=~models.Q(author=models.F("user")), name="\nNo self sibscription\n"
+                check=~models.Q(author=models.F("user")),
+                name="\nNo self sibscription\n",
             ),
         )
 

@@ -16,12 +16,18 @@ User = get_user_model()
 class ShortRecipeSerializer(ModelSerializer):
     """Укороченный сериализатор.
     Определен для некоторых эндпоинтов."""
+
     class Meta:
         model = Recipe
         fields = "id", "name", "image", "cooking_time"
         read_only_fields = (
-            "tags", "author", "ingredients", "name", "image",
-            "cooking_time", "pub_date",
+            "tags",
+            "author",
+            "ingredients",
+            "name",
+            "image",
+            "cooking_time",
+            "pub_date",
         )
 
 
@@ -99,8 +105,16 @@ class UserSubscribeSerializer(UserSerializer):
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = ("name", "color", "slug",)
-        read_only_fields = ("name", "color", "slug",)
+        fields = (
+            "name",
+            "color",
+            "slug",
+        )
+        read_only_fields = (
+            "name",
+            "color",
+            "slug",
+        )
 
     def validate(self, data):
         for attr, value in data.items():
@@ -112,8 +126,14 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ("name", "measurement_unit",)
-        read_only_fields = ("name", "measurement_unit",)
+        fields = (
+            "name",
+            "measurement_unit",
+        )
+        read_only_fields = (
+            "name",
+            "measurement_unit",
+        )
 
 
 class RecipeSerializer(ModelSerializer):

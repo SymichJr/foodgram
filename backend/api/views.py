@@ -11,11 +11,19 @@ from django.http.response import HttpResponse
 
 from api.mixins import AddDelViewMixin
 from api.paginators import PageLimitPagination
-from api.permissions import (AdminOrReadOnly, AuthorStaffOrReadOnly,
-                             DjangoModelPermissions, IsAuthenticated)
-from api.serializers import (IngredientSerializer, RecipeSerializer,
-                             ShortRecipeSerializer, TagSerializer,
-                             UserSubscribeSerializer)
+from api.permissions import (
+    AdminOrReadOnly,
+    AuthorStaffOrReadOnly,
+    DjangoModelPermissions,
+    IsAuthenticated,
+)
+from api.serializers import (
+    IngredientSerializer,
+    RecipeSerializer,
+    ShortRecipeSerializer,
+    TagSerializer,
+    UserSubscribeSerializer,
+)
 from core.enums import Tuples, UrlQueries
 from core.services import create_shoping_list, maybe_wrong_layout
 from recipes.models import Carts, Favorite, Ingredient, Recipe, Tag
@@ -125,12 +133,12 @@ class RecipeViewSet(ModelViewSet, AddDelViewMixin):
 
     @favorite.mapping.post
     def recipe_to_favorites(self, request, pk):
-        self.link_model = Favorites
+        self.link_model = Favorite
         return self._create_relation(pk)
 
     @favorite.mapping.delete
     def remove_recipe_from_favorites(self, request, pk):
-        self.link_model = Favorites
+        self.link_model = Favorite
         return self._delete_relation(Q(recipe__id=pk))
 
     @action(detail=True, permission_classes=(IsAuthenticated,))

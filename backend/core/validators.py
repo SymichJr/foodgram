@@ -92,7 +92,10 @@ def ingredients_validator(ingredients, Ingredient):
     valid_ingredients = {}
 
     for ingredient in ingredients:
-        if not (isinstance(ingredient["amount"], int) or ingredient["amount"].isdigit()):
+        if not (
+            isinstance(ingredient["amount"], int)
+            or ingredient["amount"].isdigit()
+        ):
             raise ValidationError("Неправильное количество ингидиента")
 
         valid_ingredients[ingredient["id"]] = int(ingredient["amount"])
@@ -107,6 +110,9 @@ def ingredients_validator(ingredients, Ingredient):
         raise ValidationError("Неправильные ингидиенты")
 
     for ingredient in db_ingredients:
-        valid_ingredients[ingredient.pk] = (ingredient, valid_ingredients[ingredient.pk])
+        valid_ingredients[ingredient.pk] = (
+            ingredient,
+            valid_ingredients[ingredient.pk],
+        )
 
     return valid_ingredients

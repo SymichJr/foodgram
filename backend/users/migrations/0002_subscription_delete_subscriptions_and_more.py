@@ -6,34 +6,68 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Subscription',
+            name="Subscription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_added', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания подписки')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscribers', to=settings.AUTH_USER_MODEL, verbose_name='Автор рецепта')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscription', to=settings.AUTH_USER_MODEL, verbose_name='Подписчики')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date_added",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        verbose_name="Дата создания подписки",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subscribers",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Автор рецепта",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subscription",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Подписчики",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Подписка',
-                'verbose_name_plural': 'Подписки',
+                "verbose_name": "Подписка",
+                "verbose_name_plural": "Подписки",
             },
         ),
         migrations.DeleteModel(
-            name='Subscriptions',
+            name="Subscriptions",
         ),
         migrations.AddConstraint(
-            model_name='subscription',
-            constraint=models.UniqueConstraint(fields=('author', 'user'), name='\nRepeat subscription\n'),
+            model_name="subscription",
+            constraint=models.UniqueConstraint(
+                fields=("author", "user"), name="\nRepeat subscription\n"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='subscription',
-            constraint=models.CheckConstraint(check=models.Q(('author', models.F('user')), _negated=True), name='\nNo self sibscription\n'),
+            model_name="subscription",
+            constraint=models.CheckConstraint(
+                check=models.Q(("author", models.F("user")), _negated=True),
+                name="\nNo self sibscription\n",
+            ),
         ),
     ]
