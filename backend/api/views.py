@@ -1,8 +1,3 @@
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.http.response import HttpResponse
-
-
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,25 +5,21 @@ from rest_framework.routers import APIRootView
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from django.http.response import HttpResponse
+
 from api.mixins import AddDelViewMixin
 from api.paginators import PageLimitPagination
-from api.permissions import (
-    AdminOrReadOnly,
-    AuthorStaffOrReadOnly,
-    DjangoModelPermissions,
-    IsAuthenticated,
-)
-from api.serializers import (
-    IngredientSerializer,
-    RecipeSerializer,
-    ShortRecipeSerializer,
-    TagSerializer,
-    UserSubscribeSerializer,
-)
+from api.permissions import (AdminOrReadOnly, AuthorStaffOrReadOnly,
+                             DjangoModelPermissions, IsAuthenticated)
+from api.serializers import (IngredientSerializer, RecipeSerializer,
+                             ShortRecipeSerializer, TagSerializer,
+                             UserSubscribeSerializer)
 from core.enums import Tuples, UrlQueries
 from core.services import create_shoping_list, maybe_wrong_layout
-from recipes.models import Carts, Favorites, Ingredient, Recipe, Tag
-from users.models import Subscriptions
+from recipes.models import Carts, Favorite, Ingredient, Recipe, Tag
+from users.models import Subscription
 
 User = get_user_model()
 
@@ -41,7 +32,7 @@ class UserViewSet(DjoserUserViewSet, AddDelViewMixin):
     pagination_class = PageLimitPagination
     permission_classes = (DjangoModelPermissions,)
     add_serializer = UserSubscribeSerializer
-    link_model = Subscriptions
+    link_model = Subscription
 
     @action(detail=True, permission_classes=(IsAuthenticated,))
     def subscribe(self, request, id):

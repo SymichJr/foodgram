@@ -1,22 +1,11 @@
-from django.contrib.admin import (
-    ModelAdmin,
-    TabularInline,
-    display,
-    register,
-    site,
-)
+from django.contrib.admin import (ModelAdmin, TabularInline, display, register,
+                                  site)
 from django.utils.html import format_html
 from django.utils.safestring import SafeString, mark_safe
 
 from recipes.forms import TagForm
-from recipes.models import (
-    AmountIngredient,
-    Carts,
-    Favorites,
-    Ingredient,
-    Recipe,
-    Tag,
-)
+from recipes.models import (AmountIngredient, Carts, Favorite, Ingredient,
+                            Recipe, Tag)
 
 site.site_header = "Администрирование Foodgram"
 
@@ -78,6 +67,12 @@ class RecipeAdmin(ModelAdmin):
     save_on_top = True
     empty_value_display = EMPTY_VALUE_DISPLAY
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('author')
+        queryset = queryset.prefetch_related('author__tags')
+        return queryset
+
     def get_image(self, obj) -> SafeString:
         return mark_safe(f'<img src={obj.image.url} width="80" hieght="30"')
 
@@ -111,7 +106,7 @@ class TagAdmin(ModelAdmin):
     color_code.short_description = "Цветовой код тэга"
 
 
-@register(Favorites)
+@register(Favorite)
 class FavoriteAdmin(ModelAdmin):
     list_display = ("user", "recipe", "date_added")
     search_fields = ("user__username", "recipe__name")

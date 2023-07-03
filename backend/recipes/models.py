@@ -1,13 +1,12 @@
+from PIL import Image
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Length
 
-from PIL import Image
-
 from core.enums import Limits, Tuples
 from core.validators import OneOfTwoValidator, hex_color_validator
-
 
 User = get_user_model()
 
@@ -30,13 +29,12 @@ class Tag(models.Model):
     color = models.CharField(
         verbose_name="Цвет",
         max_length=7,
-        db_index=False,
     )
     slug = models.SlugField(
         verbose_name="Slug field",
         max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
         unique=True,
-        db_index=False,
+        db_index=True,
     )
 
     class Meta:
@@ -124,7 +122,6 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name="Текстовое описание",
         help_text="Введите описание рецепта",
-        max_length=64,
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name="Время приготовления в минутах",
@@ -221,7 +218,7 @@ class AmountIngredient(models.Model):
         return f"{self.amount} {self.ingredients}"
 
 
-class Favorites(models.Model):
+class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         verbose_name="Любимые рецепты",

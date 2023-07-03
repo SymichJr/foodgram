@@ -4,19 +4,19 @@ from urllib.parse import unquote
 from django.apps import apps
 from django.db.models import F, Sum
 
-from recipes.models import AmountIngredient
 from foodgram.settings import DATE_TIME_FORMAT
+from recipes.models import AmountIngredient
 
 
 def recipe_ingredients_set(recipe, ingredients):
-    objs = []
+    objects = []
     for ingredient, amount in ingredients.values():
-        objs.append(
+        objects.append(
             AmountIngredient(
                 recipe=recipe, ingredients=ingredient, amount=amount
             )
         )
-    AmountIngredient.objects.bulk_create(objs)
+    AmountIngredient.objects.bulk_create(objects)
 
 
 def create_shoping_list(user):
@@ -40,6 +40,12 @@ def create_shoping_list(user):
 
 
 def maybe_wrong_layout(url_string):
+    # Как всегда забываешь переключить раскладку:)
+    # А тут я пока учился на курсе, нашел работу,
+    # как раз на стеке с джангой, твои советы с
+    # по всему курсу очень помогли выйти на оффер)
+    # Спасибо большое!
+    # Note 4 myself DELETE before porduction!
     equals = str.maketrans(
         "qwertyuiop[]asdfghjkl;'zxcvbnm,./",
         "йцукенгшщзхъфывапролджэячсмитьбю.",

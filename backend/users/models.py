@@ -1,19 +1,7 @@
 import unicodedata
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import (
-    CASCADE,
-    BooleanField,
-    CharField,
-    CheckConstraint,
-    DateTimeField,
-    EmailField,
-    F,
-    ForeignKey,
-    Model,
-    Q,
-    UniqueConstraint,
-)
+from django.db import models
 from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
 
@@ -21,17 +9,17 @@ from core import texts
 from core.enums import Limits
 from core.validators import MinLenValidator, OneOfTwoValidator
 
-CharField.register_lookup(Length)
+models.CharField.register_lookup(Length)
 
 
 class MyUser(AbstractUser):
-    email = EmailField(
+    email = models.EmailField(
         verbose_name="Адрес электронной почты",
         max_length=Limits.MAX_LEN_EMAIL_FIELD.value,
         unique=True,
         help_text=texts.USERS_HELP_EMAIL,
     )
-    username = CharField(
+    username = models.CharField(
         verbose_name="Уникальный юзернейм",
         max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         unique=True,
@@ -49,7 +37,7 @@ class MyUser(AbstractUser):
             ),
         ),
     )
-    first_name = CharField(
+    first_name = models.CharField(
         verbose_name="Имя",
         max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         help_text=texts.USERS_HELP_FNAME,
@@ -61,7 +49,7 @@ class MyUser(AbstractUser):
             ),
         ),
     )
-    last_name = CharField(
+    last_name = models.CharField(
         verbose_name="Фамилия",
         max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         help_text=texts.USERS_HELP_FNAME,
@@ -73,12 +61,12 @@ class MyUser(AbstractUser):
             ),
         ),
     )
-    password = CharField(
+    password = models.CharField(
         verbose_name=_("Пароль"),
         max_length=128,
         help_text=texts.USERS_HELP_FNAME,
     )
-    is_active = BooleanField(
+    is_active = models.BooleanField(
         verbose_name="Активирован",
         default=True,
     )
@@ -88,8 +76,8 @@ class MyUser(AbstractUser):
         verbose_name_plural = "Пользователи"
         ordering = ("username",)
         constraints = (
-            CheckConstraint(
-                check=Q(username__length__gte=Limits.MIN_LEN_USERNAME.value),
+            models.CheckConstraint(
+                check=models.Q(username__length__gte=Limits.MIN_LEN_USERNAME.value),
                 name="\nusername is too short\n",
             ),
         )
@@ -136,20 +124,20 @@ class MyUser(AbstractUser):
         return super().clean()
 
 
-class Subscriptions(Model):
-    author = ForeignKey(
+class Subscription(models.Model):
+    author = models.ForeignKey(
         verbose_name="Автор рецепта",
         related_name="subscribers",
         to=MyUser,
-        on_delete=CASCADE,
+        on_delete=models.CASCADE,
     )
-    user = ForeignKey(
+    user = models.ForeignKey(
         verbose_name="Подписчики",
-        related_name="subscriptions",
+        related_name="subscription",
         to=MyUser,
-        on_delete=CASCADE,
+        on_delete=models.CASCADE,
     )
-    date_added = DateTimeField(
+    date_added = models.DateTimeField(
         verbose_name="Дата создания подписки",
         auto_now_add=True,
         editable=False,
@@ -159,12 +147,12 @@ class Subscriptions(Model):
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
         constraints = (
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=("author", "user"),
                 name="\nRepeat subscription\n",
             ),
-            CheckConstraint(
-                check=~Q(author=F("user")), name="\nNo self sibscription\n"
+            models.CheckConstraint(
+                check=~models.Q(author=models.F("user")), name="\nNo self sibscription\n"
             ),
         )
 

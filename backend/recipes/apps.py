@@ -7,4 +7,4 @@ class RecipesConfig(AppConfig):
     verbose_name = "Рецепты"
 
     def ready(self):
-        from core import signals # noqa F401
+        from core import signals  # noqa F401

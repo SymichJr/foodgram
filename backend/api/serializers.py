@@ -1,24 +1,28 @@
+from drf_extra_fields.fields import Base64ImageField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
 
-from drf_extra_fields.fields import Base64ImageField
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
-
 from core.services import recipe_ingredients_set
 from core.validators import ingredients_validator, tags_exist_validator
 from recipes.models import Ingredient, Recipe, Tag
-
 
 User = get_user_model()
 
 
 class ShortRecipeSerializer(ModelSerializer):
+    """Укороченный сериализатор.
+    Определен для некоторых эндпоинтов."""
     class Meta:
         model = Recipe
         fields = "id", "name", "image", "cooking_time"
-        read_only_fields = ("__all__",)
+        read_only_fields = (
+            "tags", "author", "ingredients", "name", "image",
+            "cooking_time", "pub_date",
+        )
 
 
 class UserSerializer(ModelSerializer):
@@ -38,7 +42,7 @@ class UserSerializer(ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
         read_only_fields = ("is_subscribed",)
 
-    def get_is_subscribed(self, obj) -> bool:
+    def get_is_subscribed(self, obj):
         user = self.context.get("request").user
 
         if user.is_anonymous or (user == obj):
@@ -74,7 +78,16 @@ class UserSubscribeSerializer(UserSerializer):
             "recipes",
             "recipes_count",
         )
-        read_only_fields = ("__all__",)
+        read_only_fields = (
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed",
+            "recipes",
+            "recipes_count",
+        )
 
     def get_is_subscribed(*args):
         return True
@@ -86,8 +99,8 @@ class UserSubscribeSerializer(UserSerializer):
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = "__all__"
-        read_only_fields = ("__all__",)
+        fields = ("name", "color", "slug",)
+        read_only_fields = ("name", "color", "slug",)
 
     def validate(self, data):
         for attr, value in data.items():
@@ -99,8 +112,8 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = "__all__"
-        read_only_fields = ("__all__",)
+        fields = ("name", "measurement_unit",)
+        read_only_fields = ("name", "measurement_unit",)
 
 
 class RecipeSerializer(ModelSerializer):

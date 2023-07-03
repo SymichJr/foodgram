@@ -1,7 +1,7 @@
-from django.contrib.admin import register
+from django.contrib.admin import ModelAdmin, register
 from django.contrib.auth.admin import UserAdmin
 
-from users.models import MyUser
+from users.models import MyUser, Subscription
 
 
 @register(MyUser)
@@ -36,3 +36,25 @@ class MyUserAdmin(UserAdmin):
         "email",
     )
     save_on_top = True
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('username')
+        return queryset
+
+
+@register(Subscription)
+class SubscriptionAdmin(ModelAdmin):
+    list_display = (
+        'user',
+        'author',
+        'date_added',
+    )
+    list_filter = (
+        'user',
+        'author',
+    )
+    search_fields = (
+        'user',
+        'author',
+    )
