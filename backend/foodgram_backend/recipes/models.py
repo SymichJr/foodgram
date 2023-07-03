@@ -13,7 +13,11 @@ models.CharField.register_lookup(Length)
 class Tag(models.Model):
     name = models.CharField(
         max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
-        validators=(OneOfTwoValidator(field="Название тэга"),),
+        validators=(OneOfTwoValidator(
+            field="Название тэга",
+            first_regex = "[^а-яёА-ЯЁ]+",
+            second_regex = "[^a-zA-Z]+",
+        ),),
         verbose_name="Название",
         unique=True
     )

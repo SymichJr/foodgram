@@ -1,11 +1,11 @@
 import os
+from pathlib import Path
 
 from decouple import Csv, config
 
 DATE_TIME_FORMAT = "%d/%m/%Y %H:%M"
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -129,7 +129,7 @@ DJOSER = {
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
