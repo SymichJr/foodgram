@@ -21,7 +21,7 @@ class Limits(IntEnum):
 
 
 class UrlQueries(str, Enum):
-    SEARCH_ING_NAME = "name"
+    SEARCH_INGREGIENT_NAME = "name"
     FAVORITE = "is_favorited"
     SHOP_CART = "is_in_shopping_cart"
     AUTHOR = "author"

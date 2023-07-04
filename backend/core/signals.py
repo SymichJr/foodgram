@@ -7,7 +7,7 @@ from recipes.models import Recipe
 
 
 @receiver(post_delete, sender=Recipe)
-def delete_image(sender, instance, *a, **kw):
+def delete_image(sender, instance, *args, **kwargs):
     image = Path(instance.image.path)
     if image.exists():
         image.unlink()

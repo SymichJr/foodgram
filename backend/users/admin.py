@@ -39,7 +39,7 @@ class MyUserAdmin(UserAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related("username")
+        queryset.select_related("username")
         return queryset
 
 
@@ -58,3 +58,8 @@ class SubscriptionAdmin(ModelAdmin):
         "user",
         "author",
     )
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset.select_related("user", "author")
+        return queryset

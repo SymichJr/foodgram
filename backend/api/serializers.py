@@ -48,13 +48,13 @@ class UserSerializer(ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
         read_only_fields = ("is_subscribed",)
 
-    def get_is_subscribed(self, obj):
+    def get_is_subscribed(self, object):
         user = self.context.get("request").user
 
-        if user.is_anonymous or (user == obj):
+        if user.is_anonymous or (user == object):
             return False
 
-        return user.subscriptions.filter(author=obj).exists()
+        return user.subscriptions.filter(author=object).exists()
 
     def create(self, validated_data) -> User:
         user = User(
@@ -98,8 +98,8 @@ class UserSubscribeSerializer(UserSerializer):
     def get_is_subscribed(*args):
         return True
 
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
+    def get_recipes_count(self, object):
+        return object.recipes.count()
 
 
 class TagSerializer(ModelSerializer):
@@ -117,8 +117,8 @@ class TagSerializer(ModelSerializer):
         )
 
     def validate(self, data):
-        for attr, value in data.items():
-            data[attr] = value.sttrip(" #").upper()
+        for attribute, value in data.items():
+            data[attribute] = value.sttrip(" #").upper()
 
         return data
 

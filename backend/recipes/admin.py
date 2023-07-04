@@ -80,8 +80,7 @@ class RecipeAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related("author")
-        queryset = queryset.prefetch_related("author__tags")
+        queryset.select_related("author").prefetch_related("name__tags")
         return queryset
 
     def get_image(self, obj) -> SafeString:
@@ -128,6 +127,11 @@ class FavoriteAdmin(ModelAdmin):
     def has_delete_permission(self, request, obj):
         return False
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset.select_related("user", "recipe")
+        return queryset
+
 
 @register(Carts)
 class CardAdmin(ModelAdmin):
@@ -139,3 +143,8 @@ class CardAdmin(ModelAdmin):
 
     def has_delete_permission(self, request, obj):
         return False
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset.select_related("user", "recipe")
+        return queryset

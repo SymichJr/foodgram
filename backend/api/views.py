@@ -77,7 +77,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     permission_classes = (AdminOrReadOnly,)
 
     def get_queryset(self):
-        name = self.request.query_params.get(UrlQueries.SEARCH_ING_NAME)
+        name = self.request.query_params.get(UrlQueries.SEARCH_INGREGIENT_NAME)
         queryset = self.queryset
 
         if not name:

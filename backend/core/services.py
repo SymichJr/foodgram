@@ -30,22 +30,18 @@ def create_shoping_list(user):
         .values("name", measurement=F("measurement_unit"))
         .annotate(amount=Sum("recipe__amount"))
     )
-    ing_list = (
-        f'{ing["name"]}: {ing["amount"]} {ing["measurement"]}'
-        for ing in ingredients
+    ingredient_list = (
+        f"""{ingredient["name"]}:
+            {ingredient["amount"]}
+            {ingredient["measurement"]}"""
+        for ingredient in ingredients
     )
-    shopping_list.extend(ing_list)
+    shopping_list.extend(ingredient_list)
     shopping_list.append("\nПосчитано в Foodgram")
     return "\n".join(shopping_list)
 
 
 def maybe_wrong_layout(url_string):
-    # Как всегда забываешь переключить раскладку:)
-    # А тут я пока учился на курсе, нашел работу,
-    # как раз на стеке с джангой, твои советы с
-    # по всему курсу очень помогли выйти на оффер)
-    # Спасибо большое!
-    # Note 4 myself DELETE before porduction!
     equals = str.maketrans(
         "qwertyuiop[]asdfghjkl;'zxcvbnm,./",
         "йцукенгшщзхъфывапролджэячсмитьбю.",
