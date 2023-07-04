@@ -15,7 +15,9 @@ User = get_user_model()
 
 class ShortRecipeSerializer(ModelSerializer):
     """Укороченный сериализатор.
-    Определен для некоторых эндпоинтов."""
+    
+    Определен для некоторых эндпоинтов.
+    """
 
     class Meta:
         model = Recipe

@@ -80,7 +80,7 @@ class RecipeAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset.select_related("author").prefetch_related("name__tags")
+        queryset.select_related("author").prefetch_related("tags")
         return queryset
 
     def get_image(self, obj) -> SafeString:
