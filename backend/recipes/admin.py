@@ -5,6 +5,7 @@ from django.contrib.admin import (
     register,
     site,
 )
+from django.core.handlers.wsgi import WSGIRequest
 from django.utils.html import format_html
 from django.utils.safestring import SafeString, mark_safe
 
@@ -121,10 +122,14 @@ class FavoriteAdmin(ModelAdmin):
     list_display = ("user", "recipe", "date_added")
     search_fields = ("user__username", "recipe__name")
 
-    def has_change_permission(self, request, obj):
+    def has_change_permission(
+        self, request: WSGIRequest, obj: Favorite | None = None
+    ) -> bool:
         return False
 
-    def has_delete_permission(self, request, obj):
+    def has_delete_permission(
+        self, request: WSGIRequest, obj: Favorite | None = None
+    ) -> bool:
         return False
 
     def get_queryset(self, request):
@@ -138,10 +143,14 @@ class CardAdmin(ModelAdmin):
     list_display = ("user", "recipe", "date_added")
     search_fields = ("user__username", "recipe__name")
 
-    def has_change_permission(self, request, obj):
+    def has_change_permission(
+        self, request: WSGIRequest, obj: Carts | None = None
+    ) -> bool:
         return False
 
-    def has_delete_permission(self, request, obj):
+    def has_delete_permission(
+        self, request: WSGIRequest, obj: Carts | None = None
+    ) -> bool:
         return False
 
     def get_queryset(self, request):
