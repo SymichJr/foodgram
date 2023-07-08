@@ -153,6 +153,7 @@ class CardAdmin(ModelAdmin):
     ) -> bool:
         return False
 
+
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         queryset.select_related("user", "recipe")
