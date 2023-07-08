@@ -44,3 +44,8 @@ You can create admin account by command
 ```text
 docker exec -it app python manage.py createsuperuser
 ```
+
+### Ревьюеру 
+сайт доступен по адресу ```http://taskizm.hopto.org/```
+логин админки: Test
+пароль админки Test0987
