@@ -16,7 +16,7 @@ class MyUserAdmin(UserAdmin):
     list_display_links = (
         "email",
         "is_active",
-        )
+    )
     fields = (
         ("is_active",),
         (
