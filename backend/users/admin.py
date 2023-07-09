@@ -7,12 +7,16 @@ from users.models import MyUser, Subscription
 @register(MyUser)
 class MyUserAdmin(UserAdmin):
     list_display = (
+        "email",
         "is_active",
         "username",
         "first_name",
         "last_name",
-        "email",
     )
+    list_display_links = (
+        "email",
+        "is_active",
+        )
     fields = (
         ("is_active",),
         (
@@ -32,8 +36,6 @@ class MyUserAdmin(UserAdmin):
     )
     list_filter = (
         "is_active",
-        "first_name",
-        "email",
     )
     save_on_top = True
 
@@ -49,10 +51,6 @@ class SubscriptionAdmin(ModelAdmin):
         "user",
         "author",
         "date_added",
-    )
-    list_filter = (
-        "user",
-        "author",
     )
     search_fields = (
         "user",

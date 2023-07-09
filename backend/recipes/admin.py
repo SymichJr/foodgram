@@ -41,7 +41,6 @@ class IngredientAdmin(ModelAdmin):
         "measurement_unit",
     )
     search_fields = ("name",)
-    list_filter = ("name",)
 
     save_on_top = True
     empty_value_display = EMPTY_VALUE_DISPLAY
@@ -55,6 +54,10 @@ class RecipeAdmin(ModelAdmin):
         "get_image",
         "count_favorites",
     )
+    list_display_links = (
+        "name",
+        "author",
+    )
     fields = (
         (
             "name",
@@ -67,7 +70,6 @@ class RecipeAdmin(ModelAdmin):
         ("text",),
         ("image",),
     )
-    raw_id_fields = ("author",)
     search_fields = (
         "name",
         "author__username",
@@ -139,7 +141,7 @@ class FavoriteAdmin(ModelAdmin):
 
 
 @register(Carts)
-class CardAdmin(ModelAdmin):
+class CartAdmin(ModelAdmin):
     list_display = ("user", "recipe", "date_added")
     search_fields = ("user__username", "recipe__name")
 
