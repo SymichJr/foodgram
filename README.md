@@ -49,3 +49,5 @@ docker exec -it app python manage.py createsuperuser
 сайт доступен по адресу ```http://taskizm.hopto.org/```
 логин админки: Test
 пароль админки Test0987
+
+В пачке скриншоты админки
